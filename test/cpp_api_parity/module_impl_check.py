@@ -88,9 +88,11 @@ def _compile_cpp_code_inline(name, cpp_sources, functions):
 
 def _test_torch_nn_module_variant(unit_test_class, test_params):
   def set_python_tensors_all_requires_grad(python_input):
-    # Why is this function not working???
-    if isinstance(python_input, torch.Tensor) and python_input.dtype != torch.long:
-      return python_input.requires_grad_(True)
+    if isinstance(python_input, torch.Tensor):
+      if python_input.dtype == torch.long:
+        return python_input
+      else:
+        return python_input.requires_grad_(True)
     else:
       return [set_python_tensors_all_requires_grad(tensor) for tensor in python_input]
 
